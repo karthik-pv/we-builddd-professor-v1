@@ -10,7 +10,7 @@ module.exports.register = async( req , res ) => {
     try {
 
         // validate elements in request body 
-        const {email , name , password , subject} = await professorRegisterJoi.validateAsync(req.body,{abortEarly : false});
+        const {email , name , password , subject , secretKey} = await professorRegisterJoi.validateAsync(req.body,{abortEarly : false});
         
 
          // check if professor already exsist
@@ -21,15 +21,20 @@ module.exports.register = async( req , res ) => {
                  message: `Professor with name ${name} already exist.`
              })
          }
-         // hash given password
-        const hashedPassword = await bcrypt.hash(password, Number(process.env.BCRYPT_SALT_ROUNDS));
 
+        if(secretKey === process.env.PROFESSOR_REGISTER_SECRET){
+        // hash given password
+        const hashedPassword = await bcrypt.hash(password, Number(process.env.BCRYPT_SALT_ROUNDS));
         //create new object for professor
         const professor = new professorModel({email , name , password : hashedPassword , subject});
         // update with database
         await professor.save()
         // return success msg 
         res.status(201).json({message:'ok'});
+        }
+        else{
+            res.status(400).json({message : 'professor register secret key does not match'});
+        }
     }
     catch(error){
         // sending joi validation error messages

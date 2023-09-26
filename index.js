@@ -22,7 +22,8 @@ const startApp = async() => {
     app.use('/api/v1/professor',professor_route);
 
     app.listen(PORT, () => {
-        console.log(`Server running on PORT: ${PORT}`)
+        console.log(`Server running on PORT: ${PORT}`);
+        console.log(`${process.env.HOST}:${process.env.PORT}`);
     })
 }
 

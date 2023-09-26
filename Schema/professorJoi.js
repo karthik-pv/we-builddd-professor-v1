@@ -8,7 +8,9 @@ const professorRegisterJoi =  Joi.object({
 
     password: Joi.string().min(7).max(25).required(),
 
-    subjects: Joi.array()
+    subjects: Joi.array(),
+
+    secretKey : Joi.string().required()
 })
 
 const professorEditJoi = Joi.object({
